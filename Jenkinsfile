@@ -6,25 +6,7 @@ node('php') {
         sh 'composer install'
     }
 
-    stage("PHPLint") {
-        sh 'find app -name "*.php" -print0 | xargs -0 -n1 php -l'
-    }
-
-    stage("PHPUnit") {
-        sh 'vendor/phpunit/phpunit/phpunit --bootstrap build/bootstrap.php --configuration phpunit-coverage.xml'
-    }
-
-    stage("Publish Coverage") {
-        publishHTML (target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: 'build/coverage',
-                reportFiles: 'index.html',
-                reportName: "Coverage Report"
-
-        ])
-    }
+    
 
     
 
@@ -33,27 +15,6 @@ node('php') {
         checkstyle pattern: 'build/logs/checkstyle.xml'
     }
 
-    stage('Mess Detection Report') {
-        sh 'vendor/bin/phpmd app xml phpmd.xml --reportfile build/logs/pmd.xml --exclude vendor/ --exclude autoload.php || exit 0'
-        pmd canRunOnFailed: true, pattern: 'build/logs/pmd.xml'
-    }
-
-    stage('CPD Report') {
-        sh 'phpcpd --log-pmd build/logs/pmd-cpd.xml --exclude vendor app || exit 0' /* should be vendor/bin/phpcpd but... conflicts... */
-        dry canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml'
-    }
-
-    stage('Lines of Code') {
-        sh 'vendor/bin/phploc --count-tests --exclude vendor/ --log-csv build/logs/phploc.csv --log-xml build/logs/phploc.xml app'
-    }
-
-    stage('Software metrics') {
-        sh 'vendor/bin/pdepend --jdepend-xml=build/logs/jdepend.xml --jdepend-chart=build/pdepend/dependencies.svg --overview-pyramid=build/pdepend/overview-pyramid.svg --ignore=vendor app'
-    }
-
-    stage('Generate documentation') {
-        sh 'vendor/bin/phpdox -f phpdox.xml'
-    }
-   
+    
 
 }
