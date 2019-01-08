@@ -27,7 +27,9 @@ pipeline {
        
         stage('Lines of Code'){
             steps {
-                 sh 'vendor/bin/phploc --count-tests --exclude vendor/ --log-csv build/logs/phploc.csv --log-xml build/logs/phploc.xml app'
+                sh 'vendor/bin/phpcpd --log-pmd build/logs/phploc.xml --exclude vendor . || exit 0'
+                dry canRunOnFailed: true, pattern: 'build/logs/phploc.xml'
+                 
             }
         }
          
