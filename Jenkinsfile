@@ -24,22 +24,12 @@ pipeline {
                 dry canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml'
             }
         }
-       stage('Analysis'){
+       
+        stage('CPD ReportDeploy'){
             steps {
-                  def mvnHome = tool 'mvn-default'
- 
-                    sh "${mvnHome}/bin/mvn -batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd"
-
-                    def checkstyle = scanForIssues tool: [$class: 'CheckStyle'], pattern: 'build/logs/checkstyle.xml'
-                    publishIssues issues:[checkstyle]
-
-                    def pmd = scanForIssues tool: [$class: 'Pmd'], pattern: 'build/logs/pmd.xml'
-                    publishIssues issues:[pmd]
-
-                    def cpd = scanForIssues tool: [$class: 'Cpd'], pattern: 'build/logs/pmd-cpd..xml'
-                    publishIssues issues:[cpd]
-
-                }
+                sh 'phpcpd --log-pmd build/logs/pmd-cpd.xml --exclude vendor app || exit 0' /* should be vendor/bin/phpcpd but... conflicts... */
+                dry canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml'
+            }
         }
          
         stage('Deploy'){
