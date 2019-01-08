@@ -25,10 +25,9 @@ pipeline {
             }
         }
        
-        stage('CPD ReportDeploy'){
+        stage('Lines of Code'){
             steps {
-                sh 'phpcpd --log-pmd build/logs/pmd-cpd.xml --exclude vendor app || exit 0' /* should be vendor/bin/phpcpd but... conflicts... */
-                dry canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml'
+                 sh 'vendor/bin/phploc --count-tests --exclude vendor/ --log-csv build/logs/phploc.csv --log-xml build/logs/phploc.xml app'
             }
         }
          
