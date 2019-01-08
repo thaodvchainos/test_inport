@@ -12,26 +12,7 @@ pipeline {
                 }
         }
         
-        stage('PMD') {
-            steps {
-                sh 'vendor/bin/phpmd . xml build/phpmd.xml --reportfile build/logs/pmd.xml --exclude vendor/ || exit 0'
-                pmd canRunOnFailed: true, pattern: 'build/logs/pmd.xml'
-            }
-        }
-        stage('Copy paste detection') {
-            steps {
-                sh 'vendor/bin/phpcpd --log-pmd build/logs/pmd-cpd.xml --exclude vendor . || exit 0'
-                dry canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml'
-            }
-        }
-       
-        stage('Lines of Code'){
-            steps {
-                sh 'vendor/bin/phploc --count-tests --exclude vendor/ --log-xml build/logs/phploc.xml app'
-                 
-            }
-        }
-         
+        
         stage('Deploy'){
             steps {
                 sh  'echo  "DEPLOY STAGE"' 
