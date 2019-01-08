@@ -26,8 +26,20 @@ pipeline {
         }
        stage('Software metrics'){
             steps {
-                 sh 'vendor/bin/pdepend --jdepend-xml=build/logs/jdepend.xml --jdepend-chart=build/pdepend/dependencies.svg --overview-pyramid=build/pdepend/overview-pyramid.svg --ignore=vendor app'
-            }
+                  def mvnHome = tool 'mvn-default'
+ 
+                    sh "${mvnHome}/bin/mvn -batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd"
+
+                    def checkstyle = scanForIssues tool: [$class: 'CheckStyle'], pattern: 'build/logs/checkstyle.xml'
+                    publishIssues issues:[checkstyle]
+
+                    def pmd = scanForIssues tool: [$class: 'Pmd'], pattern: 'build/logs/pmd.xml'
+                    publishIssues issues:[pmd]
+
+                    def cpd = scanForIssues tool: [$class: 'Cpd'], pattern: 'build/logs/pmd-cpd..xml'
+                    publishIssues issues:[cpd]
+
+                }
         }
          
         stage('Deploy'){
