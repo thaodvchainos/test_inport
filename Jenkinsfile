@@ -24,9 +24,9 @@ pipeline {
                 dry canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml'
             }
         }
-       stage('PHPUnit'){
+       stage('Software metrics'){
             steps {
-                 sh 'vendor/phpunit/phpunit/phpunit --bootstrap build/bootstrap.php --configuration phpunit-coverage.xml'
+                 sh 'vendor/bin/pdepend --jdepend-xml=build/logs/jdepend.xml --jdepend-chart=build/pdepend/dependencies.svg --overview-pyramid=build/pdepend/overview-pyramid.svg --ignore=vendor app'
             }
         }
          
