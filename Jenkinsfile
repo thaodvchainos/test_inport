@@ -1,14 +1,6 @@
 node('php') {
 
-    stage('Get code from SCM') {
-        checkout(
-                [$class: 'GitSCM', branches: [[name: '*/#your-dev-branch#']],
-                 doGenerateSubmoduleConfigurations: false,
-                 extensions: [],
-                 submoduleCfg: [],
-                 userRemoteConfigs: [[url: '#your-git-link#']]]
-        )
-    }
+   
 
     stage('Composer Install') {
         sh 'composer install'
@@ -75,10 +67,10 @@ node('php') {
 
         ])
     }
-/*
+
     stage("Publish Crap4J") { // broken at the moment
         step([$class: 'hudson.plugins.crap4j.Crap4JPublisher', reportPattern: 'build/logs/crap4j.xml', healthThreshold: '10'])
     }
-*/
+
 
 }
