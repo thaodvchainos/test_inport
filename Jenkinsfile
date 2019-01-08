@@ -24,7 +24,7 @@ pipeline {
                 dry canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml'
             }
         }
-       stage('Software metrics'){
+       stage('Analysis'){
             steps {
                   def mvnHome = tool 'mvn-default'
  
