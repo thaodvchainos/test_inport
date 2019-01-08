@@ -15,22 +15,7 @@ pipeline {
         }
         
         
-        stage ('Analysis') {
-        def mvnHome = tool 'mvn-default'
- 
-        sh "${mvnHome}/bin/mvn -batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd"
- 
-        def checkstyle = scanForIssues tool: [$class: 'CheckStyle'], pattern: 'build/logs/checkstyle.xml'
-        publishIssues issues:[checkstyle]
-    
-        def pmd = scanForIssues tool: [$class: 'Pmd'], pattern: 'build/logs/pmd.xml'
-        publishIssues issues:[pmd]
          
-        def cpd = scanForIssues tool: [$class: 'Cpd'], pattern: 'build/logs/pmd-cpd..xml'
-        publishIssues issues:[cpd]
-         
-        
-    }
         stage('Deploy'){
             steps {
                 sh  'echo  "DEPLOY STAGE"' 
