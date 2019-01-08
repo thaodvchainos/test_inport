@@ -13,8 +13,23 @@ pipeline {
                 checkstyle pattern: 'build/logs/checkstyle.xml'
                 }
         }
-        
-        
+        stage('PMD') {
+            steps {
+                sh 'vendor/bin/phpmd . xml build/phpmd.xml --reportfile build/logs/pmd.xml --exclude vendor/ || exit 0'
+                pmd canRunOnFailed: true, pattern: 'build/logs/pmd.xml'
+            }
+        }
+        stage('Copy paste detection') {
+            steps {
+                sh 'vendor/bin/phpcpd --log-pmd build/logs/pmd-cpd.xml --exclude vendor . || exit 0'
+                dry canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml'
+            }
+        }
+        stage('Software metrics') {
+            steps {
+                sh 'vendor/bin/pdepend --jdepend-xml=build/logs/jdepend.xml --jdepend-chart=build/pdepend/dependencies.svg --overview-pyramid=build/pdepend/overview-pyramid.svg --ignore=vendor .'
+            }
+        }
          
         stage('Deploy'){
             steps {
