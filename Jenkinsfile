@@ -54,21 +54,6 @@ node('php') {
     stage('Generate documentation') {
         sh 'vendor/bin/phpdox -f phpdox.xml'
     }
-    stage('Publish Documentation') {
-        publishHTML (target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: 'build/phpdox/html',
-                reportFiles: 'index.html',
-                reportName: "PHPDox Documentation"
-
-        ])
-    }
-
-    stage("Publish Crap4J") { // broken at the moment
-        step([$class: 'hudson.plugins.crap4j.Crap4JPublisher', reportPattern: 'build/logs/crap4j.xml', healthThreshold: '10'])
-    }
-
+   
 
 }
